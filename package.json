@@ -14,7 +14,7 @@
     "dev:client": "npm run webpack -- --watch",
     "dev:server": "nodemon server/index.ts",
     "build": "run-p build:client build:server",
-    "build:client": "CI=false react-scripts build",
+    "build:client": "npm run webpack -- --mode production",
     "build:server": "npm run knex -- migrate:latest",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "webpack": "webpack --config ./client/webpack.config.js",
