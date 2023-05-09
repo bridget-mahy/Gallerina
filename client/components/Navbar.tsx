@@ -8,7 +8,7 @@ export default function Navbar() {
   const [activeButton, setActiveButton] = useState('')
 
   const handleLogOut = () => {
-    logout({ returnTo: window.location.origin })
+    logout()
   }
 
   const handleLogIn = () => {
@@ -17,7 +17,7 @@ export default function Navbar() {
 
   function handleKeyDownLogout(e: KeyboardEvent<HTMLDivElement>) {
     if (e.code == 'Enter') {
-      logout({ returnTo: window.location.origin })
+      logout()
     }
   }
 
