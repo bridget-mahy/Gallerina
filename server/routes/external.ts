@@ -1,6 +1,7 @@
 import request from 'superagent'
 import express from 'express'
 import { ArtworkApi } from '../../models/externalArtwork'
+import { Result } from '../../models/externalSearch'
 import { ArtworkDatabase, ArtworkSnakeCaseDatabase } from '../../models/artwork'
 import { addArtworksToDB, getArtworkById } from '../db/externalArtwork'
 const router = express.Router()
@@ -58,7 +59,7 @@ router.get('/artworks/:id', async (req, res) => {
   try {
     const id = req.params.id
     const snakeArtwork = await getArtworkById(id)
-   
+
     if (snakeArtwork && snakeArtwork.length > 0) {
       const artwork: ArtworkSnakeCaseDatabase = snakeArtwork[0]
       const camelArtwork = {
@@ -86,16 +87,21 @@ router.get('/artworks/:id', async (req, res) => {
 
 router.get('/search', async (req, res) => {
   try {
-    const search = req.query.search
+    const search = (req.query.search as string)?.replace(' ', '+')
+
     const xapp = await generateXappToken()
     const response = await request
-      .get(`https://api.artsy.net/api/artworks?term=${search}`)
+      .get(`https://api.artsy.net/api/search?q=${search}`)
       .set('X-Xapp-Token', xapp.body.token)
       .set('Accept', 'application/vnd.artsy-v2+json')
+
     const test = response.text.replace(/\\+/g, '')
     const str = test.replace(/'/g, '')
     const body = JSON.parse(str)
-    const artworks = body._embedded.artworks
+    const results = body._embedded.results
+    const artworks = results.filter(
+      (x: Result) => x.type === 'artwork' && x._links.thumbnail
+    )
     res.json(artworks)
   } catch (err) {
     res.sendStatus(500)
