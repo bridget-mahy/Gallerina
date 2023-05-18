@@ -31,12 +31,12 @@ export default function Search() {
 
   return (
     <div className="min-h-screen">
-      <div className="flex">
+      <div className="flex-start flex">
         <h1 className="text-2xl font-extrabold">Search for Artworks</h1>
-        <form className="w-1/2 rounded-md" onSubmit={handleSubmit}>
+        <form className="ml-8 w-1/3 rounded-md" onSubmit={handleSubmit}>
           <input
             type="text"
-            className="text-l ml-10 rounded border-2 border-black p-2 focus:border-my-gold focus:outline-my-gold"
+            className="text-l rounded border-2 border-black p-2 focus:border-my-gold focus:outline-my-gold"
             value={search}
             onChange={handleChange}
           />
@@ -47,7 +47,14 @@ export default function Search() {
             Submit
           </button>
         </form>
+        <p className="border-3 -mt-5 w-1/3 border-2 border-my-gold p-4 text-lg text-my-gold">
+          This search is limited by the Artsy Api&apos;s licensing restrictions.
+          To begin, perhaps try searching for contemporary artists. Try
+          &quot;simon denny&quot;, &quot;amalia ulman&quot; or &quot;bunny
+          rogers&quot; as a starting point.
+        </p>
       </div>
+
       {loading && <LoadingSpinner />}
       {error ? (
         <div className="mt-10 flex w-full justify-center">
@@ -66,7 +73,7 @@ export default function Search() {
               {artworks?.map((art) => (
                 <div
                   className="flex h-1/3 w-1/3 flex-col items-center justify-center"
-                  key={art.title}
+                  key={art._links.self.href}
                 >
                   <a
                     href={art._links.permalink.href}
